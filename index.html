@@ -30,7 +30,7 @@
       socket.on("image", function (image) {
         console.log(image);
       });
-      window.addEventListener("orientationchange", function() {
+      window.addEventListener("deviceorientation", function() {
         var image = "Orientation";
         socket.emit("image", image);
       });
