@@ -31,7 +31,7 @@
         console.log(image);
       });
       window.addEventListener("deviceorientation", function(event) {
-        var image = "Orientation";
+        var image = event.alpha;
         socket.emit("image", image);
       });
     </script>
