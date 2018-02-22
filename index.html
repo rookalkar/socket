@@ -31,7 +31,8 @@
         console.log(image);
       });
       window.addEventListener("orientationchange", function() {
-          alert("the orientation of the device is now " + screen.orientation.angle);
+        var image = "Orientation";
+        socket.emit("image", image);
       });
     </script>
   </body>
