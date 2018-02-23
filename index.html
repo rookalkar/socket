@@ -64,7 +64,7 @@
       document.getElementById("stop").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_delta = deviceorientation - deviceorientation_start;
-          socket.emit("orientation", deviceorientation_delta);
+          socket.emit("orientation", {deviceorientation_delta, dim});
       })
 
       function setDim(value) {
@@ -78,7 +78,7 @@
 
       socket.on("orientation", function (msg) {
         console.log(msg);
-        change({element: "box", attr: "rotation", dim: "x", value: msg});
+        change({element: "box", attr: "rotation", dim: msg.dim , value: msg.deviceorientation_delta});
       });
 
       function submit() {
