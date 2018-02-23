@@ -44,7 +44,7 @@
       document.getElementById("input").addEventListener("click", function (event) {
         // Prepeare file reader
           var image = "Test";
-          socket.emit("orientation", image);
+          socket.emit("test", image);
       })
       document.getElementById("start").addEventListener("click", function (event) {
         // Prepeare file reader
@@ -55,6 +55,10 @@
           deviceorientation_delta = deviceorientation - deviceorientation_start;
           socket.emit("orientation", deviceorientation_delta);
       })
+
+      socket.on("test", function (msg) {
+        console.log(msg);
+      });
 
       socket.on("orientation", function (msg) {
         console.log(msg);
