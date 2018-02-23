@@ -86,7 +86,7 @@
 
       socket.on("orientation", function (msg) {
         console.log(msg);
-        change({element: "box", attr: "rotation", dim: msg.dim , value: msg.delta});
+        change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta});
       });
 
       function setDim(value) {
