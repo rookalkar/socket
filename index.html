@@ -11,6 +11,11 @@
 
     <!-- File input and image output -->
     <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
+    <div>
+      <button type="button" id="x" onclick=setDim(x)> X </button>
+      <button type="button" id="y" onclick=setDim(y)> Y </button>
+      <button type="button" id="z" onclick=setDim(z)> Z </button>
+    </div>
     <button type="button" id="start" style="width: 100%; height:10%">Start </button>
     <button type="button" id="stop" style="width: 100%; height:10%">Stop </button>
 
@@ -24,20 +29,25 @@
 
     <!-- Client Code -->
     <script type="text/javascript">
-      // Get WebSocket
-      var socket = io();
-      // Get DOM elements
-      var input = document.getElementById("input");
-      var output = document.getElementById("output");
+
+
       var deviceorientation;
       var deviceorientation_start;
       var deviceorientation_delta;
+      var dim = 'x';
+      // Get WebSocket
+      var socket = io();
       // Join a channel
       var room = "test";
       socket.emit("join", room);
 
       window.addEventListener("deviceorientation", function(event) {
-        deviceorientation = event.alpha;
+        switch(dim) {
+          case 'x': deviceorientation = event.beta
+          case 'y': deviceorientation = event.gamma
+          case 'z': deviceorientation = event.alpha
+        }
+
         //socket.emit("image", deviceorientation);
       });
       // Listen to file input events
@@ -49,12 +59,18 @@
       document.getElementById("start").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_start = deviceorientation;
+          console.log("started")
       })
       document.getElementById("stop").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_delta = deviceorientation - deviceorientation_start;
           socket.emit("orientation", deviceorientation_delta);
       })
+
+      function setDim(value) {
+        console.log(value);
+        dim = value;
+      }
 
       socket.on("test", function (msg) {
         console.log(msg);
