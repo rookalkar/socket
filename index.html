@@ -41,9 +41,9 @@
 
       window.addEventListener("deviceorientation", function(event) {
         switch(dim) {
-          case 'x': deviceorientation = event.beta; break;
-          case 'y': deviceorientation = event.gamma; break;
-          case 'z': deviceorientation = event.alpha; break;
+          case 'x': deviceorientation = event.beta
+          case 'y': deviceorientation = event.gamma
+          case 'z': deviceorientation = event.alpha
         }
       });
       // Listen to file input events
@@ -55,12 +55,16 @@
       document.getElementById("start").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_start = deviceorientation;
-          console.log("started")
+          console.log("started");
       })
       document.getElementById("stop").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_delta = deviceorientation - deviceorientation_start;
-          socket.emit("orientation", {deviceorientation_delta, dim});
+          var msg = {
+            delta: deviceorientation_delta,
+            dimension: dim,
+          };
+          socket.emit("orientation", msg);
       })
 
       socket.on("test", function (msg) {
@@ -69,10 +73,11 @@
 
       socket.on("orientation", function (msg) {
         console.log(msg);
-        change({element: "box", attr: "rotation", dim: msg.dim , value: msg.deviceorientation_delta});
+        change({element: "box", attr: "rotation", dim: "x" , value: msg});
       });
 
       function setDim(value) {
+        console.log(value);
         dim = value;
       }
 
