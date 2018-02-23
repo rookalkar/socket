@@ -33,6 +33,7 @@
       var deviceorientation_start;
       var deviceorientation_delta;
       var dim = 'x';
+
       // Get WebSocket
       var socket = io();
       // Join a channel
@@ -44,19 +45,16 @@
           case 'x':
           {
             deviceorientation = event.beta;
-            console.log('x changed');
             break;
           }
           case 'y':
           {
             deviceorientation = event.gamma;
-            console.log('y changed');
             break;
           }
           case 'z':
           {
             deviceorientation = event.alpha;
-            console.log('z changed');
             break;
           }
         }
@@ -88,11 +86,10 @@
 
       socket.on("orientation", function (msg) {
         console.log(msg);
-        change({element: "box", attr: "rotation", dim: "x" , value: msg.delta});
+        change({element: "box", attr: "rotation", dim: msg.dim , value: msg.delta});
       });
 
       function setDim(value) {
-        console.log(value);
         dim = value;
       }
 
