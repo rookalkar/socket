@@ -9,9 +9,17 @@
   <body>
 
     <!-- File input and image output -->
-    <button type="button" id="input" style="width: 100%; height:50%">Test Me </button>
-    <button type="button" id="start" style="width: 100%; height:25%">Start </button>
-    <button type="button" id="stop" style="width: 100%; height:25%">Stop </button>
+    <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
+    <button type="button" id="start" style="width: 100%; height:10%">Start </button>
+    <button type="button" id="stop" style="width: 100%; height:10%">Stop </button>
+
+    <a-scene>
+      <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+      <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+      <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+      <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
+      <a-sky id="sky" color="#ECECEC"></a-sky>
+    </a-scene>
 
     <!-- Client Code -->
     <script type="text/javascript">
@@ -49,7 +57,24 @@
 
       socket.on("orientation", function (msg) {
         console.log(msg);
+        change({element: "box", attr: "rotation", dim: "x", value: msg});
       });
+
+      function submit() {
+          var payload = {};
+          payload.element = document.getElementById("element").value;
+          payload.attr = document.getElementById("attr").value;
+          payload.dim = document.getElementById("dim").value;
+          payload.value = document.getElementById("value").value;
+          change(payload);
+      }
+
+      function change (payload) {
+        var current_attr_value = {};
+        current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
+        current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
+        document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
+      }
     </script>
   </body>
 </html>
