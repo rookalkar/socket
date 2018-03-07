@@ -142,6 +142,7 @@
       }
 
       function add() {
+          console.log(devicemotion.x);
           acceleration_sum = acceleration_sum + devicemotion.x;
           time_seconds = time_seconds + 1;
       }
