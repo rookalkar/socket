@@ -11,6 +11,7 @@
 
     <!-- File input and image output -->
     <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
+    <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button>
     <div>
       <button type="button" id="x" onclick="setDim('x')" style="width: 30%; height:10%"> X </button>
       <button type="button" id="y" onclick="setDim('y')" style="width: 30%; height:10%"> Y </button>
@@ -25,6 +26,10 @@
       <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
       <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
       <a-sky id="sky" color="#ECECEC"></a-sky>
+      <a-entity position="0 0 20">
+        <a-camera id="camera"></a-camera>
+      </a-entity>
+      <a-camera id="camera2"></a-camera>
     </a-scene>
 
     <!-- Client Code -->
@@ -32,6 +37,9 @@
       var deviceorientation;
       var deviceorientation_start;
       var deviceorientation_delta;
+      var devicemotion = {};
+      var devicemotion_start;
+      var devicemotion_delta;
       var dim = 'x';
 
       // Get WebSocket
@@ -39,6 +47,12 @@
       // Join a channel
       var room = "test";
       socket.emit("join", room);
+
+      window.addEventListener("devicemotion", function (event) {
+        devicemotion.x = event.accelerationIncludingGravity.x;
+        devicemotion.y = event.accelerationIncludingGravity.y;
+        devicemotion.z = event.accelerationIncludingGravity.z;
+      });
 
       window.addEventListener("deviceorientation", function(event) {
         switch(dim) {
@@ -68,16 +82,26 @@
       document.getElementById("start").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_start = deviceorientation;
+          devicemotion_start = devicemotion.x;
           console.log("started");
       })
       document.getElementById("stop").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_delta = deviceorientation - deviceorientation_start;
+          devicemotion_delta = devicemotion.x - devicemotion_start;
           var msg = {
             delta: deviceorientation_delta,
             dimension: dim,
+            motion_delta: devicemotion_delta,
           };
           socket.emit("orientation", msg);
+      })
+
+      document.getElementById("cameraButton").addEventListener("click", function (event) {
+          var msg = {
+            id: 'camera'
+          };
+          socket.emit("cameraChange", msg);
       })
 
       socket.on("test", function (msg) {
@@ -89,6 +113,11 @@
         change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta});
       });
 
+      socket.on("cameraChange", function (msg) {
+        console.log(msg);
+        document.getElementById(msg.id).setAttribute('camera', 'active', true);
+      });
+
       function setDim(value) {
         dim = value;
       }
@@ -98,6 +127,10 @@
         current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
         current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
         document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
+      }
+
+      function changeCamera (id) {
+        document.getElementById(id).setAttribute("active", "true");
       }
     </script>
   </body>

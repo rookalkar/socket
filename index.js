@@ -30,5 +30,9 @@ io.on("connection", function(socket) {
       // Broadcast the "image" event to all other clients in the room
       socket.broadcast.to(room).emit("test", msg);
     });
+    socket.on("cameraChange", function(msg) {
+      // Broadcast the "image" event to all other clients in the room
+      socket.broadcast.to(room).emit("cameraChange", msg);
+    });
   })
 });
