@@ -17,8 +17,12 @@
       <button type="button" id="y" onclick="setDim('y')" style="width: 30%; height:10%"> Y </button>
       <button type="button" id="z" onclick="setDim('z')" style="width: 30%; height:10%"> Z </button>
     </div> -->
-    <button type="button" id="rotate" style="width: 100%; height:10%">Rotate </button>
-    <button type="button" id="translate" style="width: 100%; height:10%">Translate </button>
+    <div>
+      <button type="button" id="rotate" style="width: 45%; height:10%" onclick="setTransformType('rotate')">Rotate </button>
+      <button type="button" id="translate" style="width: 45%; height:10%" onclick="setTransformType('translate')">Translate </button>
+    </div>
+    <button type="button" id="start" style="width: 100%; height:10%">Start </button>
+    <button type="button" id="stop" style="width: 100%; height:10%">Stop </button>
 
     <a-scene>
       <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
@@ -42,6 +46,8 @@
       var time_seconds;
       var avg_acceleration;
       var devicemotion = {};
+
+      var transform_type = "rotate"; //default behaviour
 
       var dim = 'x';
 
@@ -83,40 +89,40 @@
           socket.emit("test", msg);
       })
 
-      document.getElementById("rotate").addEventListener("mousedown", function (event) {
+      document.getElementById("start").addEventListener("click", function (event) {
         // Prepeare file reader
           deviceorientation_start = deviceorientation;
           console.log("started");
       })
 
-      document.getElementById("rotate").addEventListener("mouseup", function (event) {
+      document.getElementById("stop").addEventListener("click", function (event) {
         deviceorientation_delta = deviceorientation - deviceorientation_start;
 
         var msg = {
           delta: deviceorientation_delta,
           dimension: dim,
-          transform: "rotate",
+          transform: transform_type,
         };
         socket.emit("orientation", msg);
       })
 
-      document.getElementById("translate").addEventListener("mousedown", function (event) {
-        // Prepeare file reader
-          deviceorientation_start = deviceorientation;
-          console.log("started");
-      })
-
-      document.getElementById("translate").addEventListener("mouseup", function (event) {
-        // Prepeare file reader
-          deviceorientation_delta = deviceorientation - deviceorientation_start;
-
-          var msg = {
-            delta: deviceorientation_delta,
-            dimension: dim,
-            transform: "translate",
-          };
-          socket.emit("orientation", msg);
-      })
+      // document.getElementById("translate").addEventListener("mousedown", function (event) {
+      //   // Prepeare file reader
+      //     deviceorientation_start = deviceorientation;
+      //     console.log("started");
+      // })
+      //
+      // document.getElementById("translate").addEventListener("mouseup", function (event) {
+      //   // Prepeare file reader
+      //     deviceorientation_delta = deviceorientation - deviceorientation_start;
+      //
+      //     var msg = {
+      //       delta: deviceorientation_delta,
+      //       dimension: dim,
+      //       transform: transform_type,
+      //     };
+      //     socket.emit("orientation", msg);
+      // })
 
       document.getElementById("cameraButton").addEventListener("click", function (event) {
           var msg = {
@@ -164,6 +170,11 @@
           //console.log(devicemotion.x);
           acceleration_sum = acceleration_sum + devicemotion.x;
           time_seconds = time_seconds + 1;
+      }
+
+      function setTransformType (type) {
+        transform_type = type;
+        console.log(transform_type);
       }
     </script>
   </body>
