@@ -82,34 +82,40 @@
           var msg = "Test";
           socket.emit("test", msg);
       })
+
       document.getElementById("rotate").addEventListener("mousedown", function (event) {
+        // Prepeare file reader
           deviceorientation_start = deviceorientation;
           console.log("started");
       })
+
       document.getElementById("rotate").addEventListener("mouseup", function (event) {
-          deviceorientation_delta = deviceorientation - deviceorientation_start;
-          var msg = {
-            delta: deviceorientation_delta,
-            dimension: dim,
-          };
-          socket.emit("rotate", msg);
+        deviceorientation_delta = deviceorientation - deviceorientation_start;
+
+        var msg = {
+          delta: deviceorientation_delta,
+          dimension: dim,
+          transform: "rotate",
+        };
+        socket.emit("orientation", msg);
       })
 
       document.getElementById("translate").addEventListener("mousedown", function (event) {
-          acceleration_sum = devicemotion.x;
-          time_seconds = 0;
-          setTimeout(add, 1000);
+        // Prepeare file reader
+          deviceorientation_start = deviceorientation;
           console.log("started");
       })
+
       document.getElementById("translate").addEventListener("mouseup", function (event) {
         // Prepeare file reader
           deviceorientation_delta = deviceorientation - deviceorientation_start;
-          avg_acceleration = acceleration_sum/time_seconds;
 
           var msg = {
-            avg_acceleration: avg_acceleration,
+            delta: deviceorientation_delta,
+            dimension: dim,
+            transform: "translate",
           };
-          socket.emit("translate", msg);
+          socket.emit("orientation", msg);
       })
 
       document.getElementById("cameraButton").addEventListener("click", function (event) {
@@ -123,15 +129,19 @@
         console.log(msg);
       });
 
-      socket.on("rotate", function (msg) {
-        change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta});
-      });
-
-      socket.on("translate", function (msg) {
+      socket.on("orientation", function (msg) {
         console.log(msg);
+        switch (msg.transform) {
+          case "rotate":
+            change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta}); break;
+          case "translate":
+            change({element: "box", attr: "position", dim: msg.dimension , value: msg.delta}); break;
+        }
+
       });
 
       socket.on("cameraChange", function (msg) {
+        console.log(msg);
         document.getElementById(msg.id).setAttribute('camera', 'active', true);
       });
 
@@ -151,7 +161,7 @@
       }
 
       function add() {
-          console.log(devicemotion.x);
+          //console.log(devicemotion.x);
           acceleration_sum = acceleration_sum + devicemotion.x;
           time_seconds = time_seconds + 1;
       }

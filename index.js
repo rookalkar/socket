@@ -22,9 +22,9 @@ io.on("connection", function(socket) {
     // join channel provided by client
     socket.join(room)
     // Register "image" events, sent by the client
-    socket.on("rotate", function(msg) {
+    socket.on("orientation", function(msg) {
       // Broadcast the "image" event to all other clients in the room
-      socket.broadcast.to(room).emit("rotate", msg);
+      socket.broadcast.to(room).emit("orientation", msg);
     });
     socket.on("test", function(msg) {
       // Broadcast the "image" event to all other clients in the room
@@ -33,10 +33,6 @@ io.on("connection", function(socket) {
     socket.on("cameraChange", function(msg) {
       // Broadcast the "image" event to all other clients in the room
       socket.broadcast.to(room).emit("cameraChange", msg);
-    });
-    socket.on("translate", function(msg) {
-      // Broadcast the "image" event to all other clients in the room
-      socket.broadcast.to(room).emit("translate", msg);
     });
   })
 });
