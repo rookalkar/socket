@@ -112,12 +112,14 @@
       })
 
       //Mouse down code
-      document.getElementById("translate").addEventListener("mousedown", function (event) {
+      document.getElementById("translate").addEventListener("touchstart", function (event) {
+          event.preventDefault();
           deviceorientation_start = deviceorientation;
           console.log("started");
       })
 
-      document.getElementById("translate").addEventListener("mouseup", function (event) {
+      document.getElementById("translate").addEventListener("touchend", function (event) {
+          event.preventDefault();
           deviceorientation_delta = deviceorientation - deviceorientation_start;
           avg_acceleration = acceleration_sum/time_seconds;
           var msg = {
