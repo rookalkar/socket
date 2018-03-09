@@ -29,9 +29,9 @@
 
     <!-- Client Code -->
     <script type="text/javascript">
-      var deviceorientation;
-      var deviceorientation_start;
-      var deviceorientation_delta;
+      var deviceorientation = {};
+      var deviceorientation_start = {};
+      var deviceorientation_delta = {};
 
       var acceleration_sum;
       var time_seconds;
@@ -50,28 +50,16 @@
       socket.emit("join", room);
 
       window.addEventListener("devicemotion", function (event) {
-        devicemotion.x = event.accelerationIncludingGravity.x;
-        devicemotion.y = event.accelerationIncludingGravity.y;
-        devicemotion.z = event.accelerationIncludingGravity.z;
+        devicemotion.x = event.acceleration.x;
+        devicemotion.y = event.acceleration.y;
+        devicemotion.z = event.acceleration.z;
       });
 
       window.addEventListener("deviceorientation", function(event) {
-        switch(dim) {
-          case 'x':
-          {
-            deviceorientation = event.beta;
-            break;
-          }
-          case 'y':
-          {
-            deviceorientation = event.gamma;
-            break;
-          }
-          case 'z':
-          {
-            deviceorientation = event.alpha;
-            break;
-          }
+        deviceorientation = {
+          x: event.beta,
+          y: event.gamma,
+          z: event.alpha
         }
       });
 
@@ -108,7 +96,7 @@
       });
 
       function startTransform (event, type) {
-      //event.preventDefault();
+        event.preventDefault();
         transform_type = type;
 
         deviceorientation_start = deviceorientation;
@@ -120,7 +108,7 @@
       }
 
       function endTransform (event) {
-      //  event.preventDefault();
+        event.preventDefault();
         clearTimeout(data_being_sent);
       }
 
@@ -146,12 +134,18 @@
       }
 
       function sendData () {
-        deviceorientation_delta = deviceorientation - deviceorientation_start;
+        deviceorientation_delta = {
+          x: deviceorientation.x - deviceorientation_start.x,
+          y: deviceorientation.y - deviceorientation_start.y,
+          z: deviceorientation.z - deviceorientation_start.z,
+        }
         deviceorientation_start = deviceorientation;
+        var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
+        var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
       //  avg_acceleration = acceleration_sum/time_seconds;
         var msg = {
-          delta: deviceorientation_delta,
-          dimension: dim,
+          delta: max_delta,
+          dimension: max_delta_dim,
           transform: transform_type,
       //    avg_acceleration: avg_acceleration,
         };
