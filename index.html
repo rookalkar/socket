@@ -11,7 +11,7 @@
     <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
     <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
     <div style="height:10%">
-      <button type="button" id="rotate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)" onmousedown="startTransform(event, 'rotate')" onmouseup="endTransform(event)">Rotate </button>
+      <button type="button" id="rotate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
       <button type="button" id="translate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
     </div>
 
@@ -112,7 +112,7 @@
         transform_type = type;
 
         deviceorientation_start = deviceorientation;
-        data_being_sent = setInterval(sendData, 1000);
+        data_being_sent = setInterval(sendData, 300);
 
         // acceleration_sum = devicemotion.x;
         // time_seconds = 0;
