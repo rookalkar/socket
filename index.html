@@ -42,6 +42,7 @@
       var dim = 'x';
 
       var data_being_sent;
+      var acceleration_being_sum;
 
       // Get WebSocket
       var socket = io();
@@ -102,14 +103,15 @@
         deviceorientation_start = deviceorientation;
         data_being_sent = setInterval(sendData, 50);
 
-        // acceleration_sum = devicemotion.x;
-        // time_seconds = 0;
-        // setTimeout(add, 1000);
+        acceleration_sum = devicemotion.x;
+        time_seconds = 0;
+        acceleration_being_sum = setInterval(add, 11);
       }
 
       function endTransform (event) {
         event.preventDefault();
         clearTimeout(data_being_sent);
+        clearTimeout(acceleration_being_sum);
       }
 
       function setDim(value) {
@@ -129,8 +131,8 @@
 
       function add() {
           //console.log(devicemotion.x);
-          acceleration_sum = acceleration_sum + devicemotion.x;
-          time_seconds = time_seconds + 1;
+          acceleration_sum = acceleration_sum + Math.abs(devicemotion.x);
+          time_seconds = time_seconds + 11; //in milliseconds to not coincide with 50
       }
 
       function sendData () {
@@ -142,12 +144,14 @@
         deviceorientation_start = deviceorientation;
         var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
         var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
-      //  avg_acceleration = acceleration_sum/time_seconds;
+        avg_acceleration = acceleration_sum/time_seconds;
+        acceleration_sum = devicemotion.x;
+        time_seconds = 0;
         var msg = {
           delta: max_delta,
           dimension: max_delta_dim,
           transform: transform_type,
-      //    avg_acceleration: avg_acceleration,
+          avg_acceleration: avg_acceleration,
         };
         socket.emit("orientation", msg);
       }
