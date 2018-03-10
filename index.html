@@ -86,7 +86,7 @@
           case "rotate":
             change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta}); break;
           case "translate":
-            change({element: "box", attr: "position", dim: 'x', value: msg.delta/10}); break;
+            change({element: "box", attr: "position", dim: 'x', value: msg.avg_acceleration*10}); break;
         }
 
       });
