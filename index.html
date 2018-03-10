@@ -38,11 +38,18 @@
       var avg_acceleration;
       var devicemotion = {};
 
+      var speed_sum;
+      var avg_speed;
+      var devicespeed = {};
+
       var transform_type = "rotate"; //default behaviour
       var dim = 'x';
 
       var data_being_sent;
       var acceleration_being_sum;
+      var speed_being_sum;
+
+      var lastTimestamp;
 
       // Get WebSocket
       var socket = io();
@@ -54,6 +61,17 @@
         devicemotion.x = event.acceleration.x;
         devicemotion.y = event.acceleration.y;
         devicemotion.z = event.acceleration.z;
+        var currentTime = new Date().getTime();
+        if (lastTimestamp === undefined) {
+          lastTimestamp = new Date().getTime();
+          return; //ignore first call, we need a reference time
+        }
+        //  m/s² * (miliseconds - miliseconds)/1000  => m/s
+        devicespeed.x += event.acceleration.x  * ((currentTime - lastTimestamp)/1000);
+        devicespeed.y += event.acceleration.y  * ((currentTime - lastTimestamp)/1000);
+        devicespeed.z += event.acceleration.z  * ((currentTime - lastTimestamp)/1000);
+
+        lastTimestamp = currentTime;
       });
 
       window.addEventListener("deviceorientation", function(event) {
@@ -86,7 +104,7 @@
           case "rotate":
             change({element: "box", attr: "rotation", dim: msg.dimension , value: msg.delta}); break;
           case "translate":
-            change({element: "box", attr: "position", dim: 'x', value: msg.avg_acceleration*10}); break;
+            change({element: "box", attr: "position", dim: 'x', value: msg.speed_sum*10}); break;
         }
 
       });
@@ -99,19 +117,22 @@
       function startTransform (event, type) {
         event.preventDefault();
         transform_type = type;
-
         deviceorientation_start = deviceorientation;
+        //acceleration_sum = devicemotion.x;
+        speed_sum = devicespeed.x;
+        time_seconds = 0; //Initiatlize
+        speed_being_sum = setInterval(add, 11);
         data_being_sent = setInterval(sendData, 50);
 
-        acceleration_sum = devicemotion.x;
-        time_seconds = 0;
-        acceleration_being_sum = setInterval(add, 11);
+      //  acceleration_being_sum = setInterval(add, 11);
+
       }
 
       function endTransform (event) {
         event.preventDefault();
         clearTimeout(data_being_sent);
-        clearTimeout(acceleration_being_sum);
+        //clearTimeout(acceleration_being_sum);
+        clearTimeout(speed_being_sum);
       }
 
       function setDim(value) {
@@ -131,7 +152,8 @@
 
       function add() {
           //console.log(devicemotion.x);
-          acceleration_sum = acceleration_sum + Math.abs(devicemotion.x);
+          //acceleration_sum = acceleration_sum + Math.abs(devicemotion.x);
+          speed_sum = speed_sum + devicespeed.x;
           time_seconds = time_seconds + 11; //in milliseconds to not coincide with 50
       }
 
@@ -141,19 +163,22 @@
           y: deviceorientation.y - deviceorientation_start.y,
           z: deviceorientation.z - deviceorientation_start.z,
         }
-        deviceorientation_start = deviceorientation;
         var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
         var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
-        avg_acceleration = acceleration_sum/time_seconds;
-        acceleration_sum = devicemotion.x;
-        time_seconds = 0;
+        //avg_acceleration = acceleration_sum/time_seconds;
+        //acceleration_sum = devicemotion.x;
+
         var msg = {
           delta: max_delta,
           dimension: max_delta_dim,
           transform: transform_type,
-          avg_acceleration: avg_acceleration,
+          avg_distance: speed_sum,
         };
+
         socket.emit("orientation", msg);
+        speed_sum = devicespeed.x;
+        time_seconds = 0;
+        deviceorientation_start = deviceorientation; //reset
       }
     </script>
   </body>
