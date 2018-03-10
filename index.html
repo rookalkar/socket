@@ -32,6 +32,7 @@
       var deviceorientation = {};
       var deviceorientation_start = {};
       var deviceorientation_delta = {};
+      var devicemotion = {};
 
       var transform_type = "rotate"; //default behaviour
       var dim = 'x';
@@ -51,6 +52,12 @@
           y: event.gamma,
           z: event.alpha
         }
+      });
+
+      window.addEventListener("devicemotion", function (event) {
+        devicemotion.x = event.acceleration.x;
+        devicemotion.y = event.acceleration.y;
+        devicemotion.z = event.acceleration.z;
       });
 
       document.getElementById("input").addEventListener("click", function (event) {
@@ -73,9 +80,9 @@
         console.log(msg);
         switch (msg.transform) {
           case "rotate":
-            change({element: "box", attr: "rotation", dim: msg.dimension, value: msg.delta}); break;
+            change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
           case "translate":
-            change({element: "box", attr: "position", dim: 'x', value: msg.avg_distance/100}); break;
+            change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
         }
 
       });
@@ -131,9 +138,10 @@
 
         var msg = {
           delta: max_delta,
-          dimension: max_delta_dim,
+          rotate_dimension: max_delta_dim,
           transform: transform_type,
           avg_distance: 50,
+          translate_dimension: Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z)),
         };
 
         socket.emit("orientation", msg);
