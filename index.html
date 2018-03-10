@@ -90,14 +90,14 @@
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
-        time_being_sum = setInterval(add, 11);
+        //time_being_sum = setInterval(add, 10);
         data_being_sent = setInterval(sendData, 50);
       }
 
       function endTransform (event) {
         event.preventDefault();
         clearTimeout(data_being_sent);
-        clearTimeout(time_being_sum);
+        //clearTimeout(time_being_sum);
       }
 
       function setDim(value) {
@@ -117,7 +117,7 @@
 
       function add() {
           //console.log(devicemotion.x);
-          time_seconds = time_seconds + 11; //in milliseconds to not coincide with 50
+          time_seconds = time_seconds + 10; //in milliseconds
       }
 
       function sendData () {
@@ -133,12 +133,12 @@
           delta: max_delta,
           dimension: max_delta_dim,
           transform: transform_type,
-          avg_distance: time_seconds,
+          avg_distance: 50,
         };
 
         socket.emit("orientation", msg);
 
-        time_seconds = 0;
+        //time_seconds = 0;
         deviceorientation_start = deviceorientation; //reset
       }
     </script>
