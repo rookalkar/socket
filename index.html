@@ -172,7 +172,7 @@
           delta: max_delta,
           dimension: max_delta_dim,
           transform: transform_type,
-          avg_distance: speed_sum,
+          avg_distance: devicespeed.x,
         };
 
         socket.emit("orientation", msg);
