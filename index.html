@@ -105,17 +105,13 @@
         clearTimeout(data_being_sent);
         //clearTimeout(time_being_sum);
       }
-      //
-      // function setDim(value) {
-      //   dim = value;
-      // }
-      //
-      // function change (payload) {
-      //   var current_attr_value = {};
-      //   current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
-      //   current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
-      //   document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
-      // }
+      
+      function change (payload) {
+        var current_attr_value = {};
+        current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
+        current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
+        document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
+      }
       //
       // function changeCamera (id) {
       //   document.getElementById(id).setAttribute("active", "true");
