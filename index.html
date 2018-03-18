@@ -16,7 +16,7 @@
     </div>
 
     <a-scene>
-      <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+      <a-box id="box" position="-1 0.5 -3" color="#4CC3D9" shadow></a-box>
       <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
       <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
       <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
@@ -80,13 +80,14 @@
         console.log(msg);
         var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
         var max_delta_dim = Object.keys(msg).filter(function(key) {return msg[key] === max_delta})[0];
+        var dimension = max_delta_dim[1];
         console.log(max_delta_dim);
-        // switch (msg.transform) {
-        //   case "rotate":
-        //     change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
-        //   case "translate":
-        //     change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
-        // }
+        switch (msg.transform) {
+          case "rotate":
+            change({element: "box", attr: "rotation", dim: dimension, value: max_delta}); break;
+          case "translate":
+            change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
+        }
 
       });
 
