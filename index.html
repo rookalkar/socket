@@ -128,21 +128,21 @@
           dy: deviceorientation.y - deviceorientation_start.y,
           dz: deviceorientation.z - deviceorientation_start.z,
         }
-        // var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
-        // var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
+        var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
+        var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
         // var max_motion = Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z));
         // var motion_direction = Object.keys(devicemotion).find(key => devicemotion[key] === max_motion);
         //
-        // var msg = {
-        //   delta: max_delta,
-        //   rotate_dimension: max_delta_dim,
-        //   transform: transform_type,
-        //   avg_distance: 50,
-        //   translate_dimension: motion_direction,
-        //   acc: max_motion,
-        // };
+        var msg = {
+          delta: max_delta,
+          rotate_dimension: max_delta_dim,
+          transform: transform_type,
+          // avg_distance: 50,
+          // translate_dimension: motion_direction,
+          // acc: max_motion,
+        };
 
-        socket.emit("orientation", deviceorientation_delta);
+        socket.emit("orientation", msg);
 
         //time_seconds = 0;
         deviceorientation_start = deviceorientation; //reset
