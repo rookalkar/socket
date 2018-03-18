@@ -142,7 +142,7 @@
         //   acc: max_motion,
         // };
 
-        socket.emit("orientation", {deviceorientation_delta, transform_type});
+        socket.emit("orientation", deviceorientation_delta);
 
         //time_seconds = 0;
         deviceorientation_start = deviceorientation; //reset
