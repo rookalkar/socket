@@ -10,17 +10,10 @@
   <body>
 
     <!-- File input and image output -->
-    <button type="button" id="input" style="width: 100%;">Test Me </button>
-    <a-scene>
-      <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
-      <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
-      <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
-      <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
-      <a-sky id="sky" color="#ECECEC"></a-sky>
-    </a-scene>
+    <button type="button" id="input" style="width: 100%;">Watch me </button>
 
     <!-- Client Code -->
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
       // Get WebSocket
       var socket = io();
       // Get DOM elements
@@ -40,6 +33,6 @@
       socket.on("orientation", function (msg) {
         console.log(msg);
       });
-    </script>
+    </script> -->
   </body>
 </html>

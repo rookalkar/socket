@@ -46,19 +46,19 @@
       var room = "test";
       socket.emit("join", room);
 
-      window.addEventListener("deviceorientation", function(event) {
-        deviceorientation = {
-          x: event.beta,
-          y: event.gamma,
-          z: event.alpha
-        }
-      });
-
-      window.addEventListener("devicemotion", function (event) {
-        devicemotion.x = event.acceleration.x;
-        devicemotion.y = event.acceleration.y;
-        devicemotion.z = event.acceleration.z;
-      });
+      // window.addEventListener("deviceorientation", function(event) {
+      //   deviceorientation = {
+      //     x: event.beta,
+      //     y: event.gamma,
+      //     z: event.alpha
+      //   }
+      // });
+      //
+      // window.addEventListener("devicemotion", function (event) {
+      //   devicemotion.x = event.acceleration.x;
+      //   devicemotion.y = event.acceleration.y;
+      //   devicemotion.z = event.acceleration.z;
+      // });
 
       document.getElementById("input").addEventListener("click", function (event) {
           var msg = "Test";
@@ -76,82 +76,77 @@
         console.log(msg);
       });
 
-      socket.on("orientation", function (msg) {
-        console.log(msg);
-        switch (msg.transform) {
-          case "rotate":
-            change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
-          case "translate":
-            change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
-        }
+      // socket.on("orientation", function (msg) {
+      //   console.log(msg);
+      //   switch (msg.transform) {
+      //     case "rotate":
+      //       change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
+      //     case "translate":
+      //       change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
+      //   }
+      //
+      // });
 
-      });
-
-      socket.on("cameraChange", function (msg) {
-        console.log(msg);
-        document.getElementById(msg.id).setAttribute('camera', 'active', true);
-      });
-
-      function startTransform (event, type) {
-        event.preventDefault();
-        transform_type = type;
-        deviceorientation_start = deviceorientation;
-        time_seconds = 0; //Initiatlize
-        //time_being_sum = setInterval(add, 10);
-        data_being_sent = setInterval(sendData, 50);
-      }
-
-      function endTransform (event) {
-        event.preventDefault();
-        clearTimeout(data_being_sent);
-        //clearTimeout(time_being_sum);
-      }
-
-      function setDim(value) {
-        dim = value;
-      }
-
-      function change (payload) {
-        var current_attr_value = {};
-        current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
-        current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
-        document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
-      }
-
-      function changeCamera (id) {
-        document.getElementById(id).setAttribute("active", "true");
-      }
-
-      function add() {
-          //console.log(devicemotion.x);
-          time_seconds = time_seconds + 10; //in milliseconds
-      }
-
-      function sendData () {
-        deviceorientation_delta = {
-          x: deviceorientation.x - deviceorientation_start.x,
-          y: deviceorientation.y - deviceorientation_start.y,
-          z: deviceorientation.z - deviceorientation_start.z,
-        }
-        var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
-        var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
-        var max_motion = Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z));
-        var motion_direction = Object.keys(devicemotion).find(key => devicemotion[key] === max_motion);
-
-        var msg = {
-          delta: max_delta,
-          rotate_dimension: max_delta_dim,
-          transform: transform_type,
-          avg_distance: 50,
-          translate_dimension: motion_direction,
-          acc: max_motion,
-        };
-
-        socket.emit("orientation", msg);
-
-        //time_seconds = 0;
-        deviceorientation_start = deviceorientation; //reset
-      }
+      // function startTransform (event, type) {
+      //   event.preventDefault();
+      //   transform_type = type;
+      //   deviceorientation_start = deviceorientation;
+      //   time_seconds = 0; //Initiatlize
+      //   //time_being_sum = setInterval(add, 10);
+      //   data_being_sent = setInterval(sendData, 50);
+      // }
+      //
+      // function endTransform (event) {
+      //   event.preventDefault();
+      //   clearTimeout(data_being_sent);
+      //   //clearTimeout(time_being_sum);
+      // }
+      //
+      // function setDim(value) {
+      //   dim = value;
+      // }
+      //
+      // function change (payload) {
+      //   var current_attr_value = {};
+      //   current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
+      //   current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
+      //   document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
+      // }
+      //
+      // function changeCamera (id) {
+      //   document.getElementById(id).setAttribute("active", "true");
+      // }
+      //
+      // function add() {
+      //     //console.log(devicemotion.x);
+      //     time_seconds = time_seconds + 10; //in milliseconds
+      // }
+      //
+      // function sendData () {
+      //   deviceorientation_delta = {
+      //     x: deviceorientation.x - deviceorientation_start.x,
+      //     y: deviceorientation.y - deviceorientation_start.y,
+      //     z: deviceorientation.z - deviceorientation_start.z,
+      //   }
+      //   var max_delta = Math.max(deviceorientation_delta.x, deviceorientation_delta.y, deviceorientation_delta.z);
+      //   var max_delta_dim = Object.keys(deviceorientation_delta).find(key => deviceorientation_delta[key] === max_delta);
+      //   var max_motion = Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z));
+      //   var motion_direction = Object.keys(devicemotion).find(key => devicemotion[key] === max_motion);
+      //
+      //   var msg = {
+      //     delta: max_delta,
+      //     rotate_dimension: max_delta_dim,
+      //     transform: transform_type,
+      //     avg_distance: 50,
+      //     translate_dimension: motion_direction,
+      //     acc: max_motion,
+      //   };
+      //
+      //   socket.emit("orientation", msg);
+      //
+      //   //time_seconds = 0;
+      //   deviceorientation_start = deviceorientation; //reset
+      // }
     </script>
   </body>
 </html>
