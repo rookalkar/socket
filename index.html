@@ -79,8 +79,8 @@
       socket.on("orientation", function (msg) {
         console.log(msg);
         var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
-      //  var max_delta_dim = Object.keys(msg).find(key => msg[key] === max_delta);
-        console.log(max_delta);
+        var max_delta_dim = Object.keys(msg).filter(function(key) {return msg[key] === max_delta})[0];
+        console.log(max_delta_dim);
         // switch (msg.transform) {
         //   case "rotate":
         //     change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
