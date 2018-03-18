@@ -77,9 +77,9 @@
       });
 
       socket.on("orientation", function (msg) {
-        var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
-        var max_delta_dim = Object.keys(msg).find(key => msg[key] === max_delta);
-        console.log(msg, max_delta, max_delta_dim);
+        // var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
+        // var max_delta_dim = Object.keys(msg).find(key => msg[key] === max_delta);
+        console.log(msg);
         // switch (msg.transform) {
         //   case "rotate":
         //     change({element: "box", attr: "rotation", dim: msg.rotate_dimension, value: msg.delta}); break;
