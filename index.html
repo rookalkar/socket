@@ -68,11 +68,11 @@
         }
       });
 
-      window.addEventListener("devicemotion", function (event) {
-        devicemotion.x = event.acceleration.x;
-        devicemotion.y = event.acceleration.y;
-        devicemotion.z = event.acceleration.z;
-      });
+      // window.addEventListener("devicemotion", function (event) {
+      //   devicemotion.x = event.acceleration.x;
+      //   devicemotion.y = event.acceleration.y;
+      //   devicemotion.z = event.acceleration.z;
+      // });
 
       document.getElementById("input").addEventListener("click", function (event) {
           var msg = devicemotion;
@@ -87,8 +87,8 @@
         console.log(msg);
         var tilt_value;
 
-        var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
-        var max_delta_dim = Object.keys(msg).filter(function(key) {return msg[key] === max_delta})[0];
+        var max_delta = Math.max(Math.abs(msg.dx_rot), Math.abs(msg.dy_rot), Math.abs(msg.dz_rot));
+        var max_delta_dim = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_delta})[0];
 
         // var max_motion = Math.max(Math.abs(msg.acc_x), Math.abs(msg.acc_y), Math.abs(msg.acc_z));
         // var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
@@ -97,6 +97,7 @@
         var tilt_direction = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_tilt})[0];
 
         var rot_dimension = max_delta_dim[1];
+        max_delta = msg['d' + max_delta_dim + '_rot'];
         // var motion_dimension = motion_direction && motion_direction[4];
 
 // mapping from real world axis to AFrame axis is different.
@@ -168,10 +169,6 @@
           y_tilt: deviceorientation.y,
           z_tilt: deviceorientation.z,
           transform: transform_type,
-          acc_x: devicemotion.x,
-          acc_y: devicemotion.y,
-          acc_z: devicemotion.z,
-          orientation: orientation,
         }
         socket.emit("orientation", msg);
         deviceorientation_start = deviceorientation; //reset
