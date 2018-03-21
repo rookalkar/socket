@@ -129,10 +129,13 @@
       }
 
       function sendData () {
+        var max_tilt = Math.max(deviceorientation.x, deviceorientation.y, deviceorientation.z);
+        var tilt_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
         msg = {
           dx_rot: deviceorientation.x - deviceorientation_start.x,
           dy_rot: deviceorientation.y - deviceorientation_start.y,
           dz_rot: deviceorientation.z - deviceorientation_start.z,
+          tilt_direction: tilt_direction,
           transform: transform_type,
           acc_x: devicemotion.x,
           acc_y: devicemotion.y,
