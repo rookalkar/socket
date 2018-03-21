@@ -90,23 +90,26 @@
         var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
         var max_delta_dim = Object.keys(msg).filter(function(key) {return msg[key] === max_delta})[0];
 
-        var max_motion = Math.max(Math.abs(msg.acc_x), Math.abs(msg.acc_y), Math.abs(msg.acc_z));
-        var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
+        // var max_motion = Math.max(Math.abs(msg.acc_x), Math.abs(msg.acc_y), Math.abs(msg.acc_z));
+        // var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
 
         var max_tilt = Math.max(Math.abs(msg.x_tilt), Math.abs(msg.y_tilt));
         var tilt_direction = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_tilt})[0];
 
         var rot_dimension = max_delta_dim[1];
         var motion_dimension = motion_direction && motion_direction[4];
+
+// mapping from real world axis to AFrame axis is different.
         var tilt_dimension;
-        if (tilt_direction[0]  == 'x') { //when watch is tilted on the x axis, it is tilted in y direction
-          tilt_dimension = 'z';
+        ((tilt_direction[0]  == 'x') ? tilt_dimension = 'z': tilt_dimension = 'x' ) //when watch is tilted on the x axis, it is tilted in y direction
+
+        if (rot_dimension == 'y') {
+          rot_dimension = 'z';
         }
-        else {
-          tilt_dimension = 'x';
+        if (rot_dimension == 'z') {
+          rot_dimension = 'y';
         }
 
-        // mapping from real world axis to AFrame axis is different.
 
 // figure out positive or negative
         if(msg[tilt_direction] > 0) {
