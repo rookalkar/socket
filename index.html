@@ -6,26 +6,34 @@
     <title>SocketIO Client</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <link href="main.css" type="text/css"></link>
   </head>
   <body>
-    <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
-    <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
-    <div style="height:10%">
-      <button type="button" id="rotate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
-      <button type="button" id="translate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
+    <div id="screentype">
+      <button onclick="selectScreen('watch')">Watch</button>
+      <button onclick="selectScreen('screen')" >Screen</button>
     </div>
 
-    <a-scene>
-      <a-box id="box" position="-1 0.5 -3" color="#4CC3D9" shadow></a-box>
-      <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
-      <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
-      <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
-      <a-sky id="sky" color="#ECECEC"></a-sky>
-      <a-entity position="0 0 20">
-        <a-camera id="camera"></a-camera>
-      </a-entity>
-      <a-camera id="camera2"></a-camera>
-    </a-scene>
+    <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
+    <div id="watch" style="display:none;">
+      <button type="button" id="rotate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
+      <button type="button" id="translate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
+      <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
+    </div>
+
+    <div id="screen" style="display:none;">
+      <a-scene>
+        <a-box id="box" position="-1 0.5 -3" color="#4CC3D9" shadow></a-box>
+        <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+        <a-cylinder id="cylinder" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+        <a-plane id="plane" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
+        <a-sky id="sky" color="#ECECEC"></a-sky>
+        <a-entity position="0 0 20">
+          <a-camera id="camera"></a-camera>
+        </a-entity>
+        <a-camera id="camera2"></a-camera>
+      </a-scene>
+    </div>
 
     <!-- Client Code -->
     <script type="text/javascript">
@@ -53,15 +61,15 @@
           z: event.alpha
         }
       });
-      //
-      // window.addEventListener("devicemotion", function (event) {
-      //   devicemotion.x = event.acceleration.x;
-      //   devicemotion.y = event.acceleration.y;
-      //   devicemotion.z = event.acceleration.z;
-      // });
+
+      window.addEventListener("devicemotion", function (event) {
+        devicemotion.x = event.acceleration.x;
+        devicemotion.y = event.acceleration.y;
+        devicemotion.z = event.acceleration.z;
+      });
 
       document.getElementById("input").addEventListener("click", function (event) {
-          var msg = deviceorientation;
+          var msg = devicemotion;
           socket.emit("test", msg);
       })
 
@@ -91,6 +99,16 @@
 
       });
 
+      function selectScreen (type) {
+        if(type == 'watch'){
+          document.getElementById('watch').style.display = 'block';
+        }
+        else {
+          document.getElementById('screen').style.display = 'block';
+        }
+        document.getElementById('screentype').style.display = 'none';
+      }
+
       function startTransform (event, type) {
         event.preventDefault();
         transform_type = type;
@@ -105,7 +123,7 @@
         clearTimeout(data_being_sent);
         //clearTimeout(time_being_sum);
       }
-      
+
       function change (payload) {
         var current_attr_value = {};
         current_attr_value = document.getElementById(payload.element).getAttribute(payload.attr);
@@ -123,11 +141,14 @@
       // }
       //
       function sendData () {
-        deviceorientation_delta = {
+        msg = {
           dx_rot: deviceorientation.x - deviceorientation_start.x,
           dy_rot: deviceorientation.y - deviceorientation_start.y,
           dz_rot: deviceorientation.z - deviceorientation_start.z,
           transform: 'rotate',
+          acc_x: devicemotion.x,
+          acc_y: devicemotion.y,
+          acc_z: devicemotion.z,
         }
         // var max_motion = Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z));
         // var motion_direction = Object.keys(devicemotion).find(key => devicemotion[key] === max_motion);
@@ -141,7 +162,7 @@
         //   acc: max_motion,
         // };
 
-        socket.emit("orientation", deviceorientation_delta);
+        socket.emit("orientation", msg);
 
         //time_seconds = 0;
         deviceorientation_start = deviceorientation; //reset
