@@ -10,15 +10,15 @@
   </head>
   <body>
     <div id="screentype">
-      <button onclick="selectScreen('watch')">Watch</button>
-      <button onclick="selectScreen('screen')" >Screen</button>
+      <button style="width: 45%; padding:100px" onclick="selectScreen('watch')">Watch</button>
+      <button style="width: 45%; padding:100px" onclick="selectScreen('screen')" >Screen</button>
     </div>
 
     <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
     <div id="watch" style="display:none;">
-      <button type="button" id="rotate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
-      <button type="button" id="translate" style="width: 45%; height:100%" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
-      <button type="button" id="input" style="width: 100%; height:10%">Test Me </button>
+      <button type="button" id="rotate" style="width: 45%; padding:70px" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
+      <button type="button" id="translate" style="width: 45%; padding:70px" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
+      <button type="button" id="input" style="width: 100%; padding:70px">Test Me </button>
     </div>
 
     <div id="screen" style="display:none;">
