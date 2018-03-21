@@ -92,11 +92,13 @@
         var motion_dimension = motion_direction && motion_direction[4];
         var tilt_dimension;
         if (tilt_direction[0]  == 'x') { //when watch is tilted on the x axis, it is tilted in y direction
-          tilt_dimension = 'y';
+          tilt_dimension = 'z';
         }
         else {
           tilt_dimension = 'x';
         }
+
+        // mapping from real world axis to AFrame axis is different.
 
         console.log(tilt_dimension);
         switch (msg.transform) {
