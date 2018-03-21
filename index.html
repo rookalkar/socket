@@ -85,19 +85,25 @@
         var max_motion = Math.max(Math.abs(msg.acc_x), Math.abs(msg.acc_y), Math.abs(msg.acc_z));
         var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
 
-        var max_tilt = Math.max(msg.x_tilt, msg.y_tilt, msg.z_tilt);
+        var max_tilt = Math.max(msg.x_tilt, msg.y_tilt);
         var tilt_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_tilt})[0];
 
         var rot_dimension = max_delta_dim[1];
         var motion_dimension = motion_direction && motion_direction[4];
-        var tilt_dimension = tilt_direction[1];
+        var tilt_dimension;
+        if (tilt_direction[0]  == x) { //when watch is tilted on the x axis, it is tilted in y direction
+          tilt_dimension = 'y';
+        }
+        else {
+          tilt_dimension = 'x';
+        }
 
         console.log(tilt_dimension);
         switch (msg.transform) {
           case "rotate":
             change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta}); break;
           case "translate":
-            change({element: "box", attr: "position", dim: motion_dimension, value: 0.75}); break;
+            change({element: "box", attr: "position", dim: tilt_dimension, value: 0.75}); break;
         }
 
       });
