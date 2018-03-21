@@ -48,11 +48,17 @@
       var data_being_sent;
       var time_being_sum;
 
+      var orientation;
+
       // Get WebSocket
       var socket = io();
       // Join a channel
       var room = "test";
       socket.emit("join", room);
+
+      window.addEventListener("orientationchange", function(event) {
+        orientation = event.orientation;
+      });
 
       window.addEventListener("deviceorientation", function(event) {
         deviceorientation = {
@@ -162,6 +168,7 @@
           acc_x: devicemotion.x,
           acc_y: devicemotion.y,
           acc_z: devicemotion.z,
+          orientation: orientation,
         }
         socket.emit("orientation", msg);
         deviceorientation_start = deviceorientation; //reset
