@@ -86,7 +86,7 @@
         var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
 
         var max_tilt = Math.max(msg.x_tilt, msg.y_tilt, msg.z_tilt);
-        var tilt_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
+        var tilt_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_tilt})[0];
 
         var rot_dimension = max_delta_dim[1];
         var motion_dimension = motion_direction && motion_direction[4];
