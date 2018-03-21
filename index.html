@@ -16,9 +16,9 @@
 
     <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
     <div id="watch" style="display:none;">
-      <button type="button" id="rotate" style="width: 45%; padding:70px" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
-      <button type="button" id="translate" style="width: 45%; padding:70px" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
-      <button type="button" id="input" style="width: 100%; padding:70px">Test Me </button>
+      <button type="button" id="rotate" style="width: 45%; padding:20px" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
+      <button type="button" id="translate" style="width: 45%; padding:20px" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
+      <button type="button" id="input" style="width: 100%; padding:20px">Test Me </button>
     </div>
 
     <div id="screen" style="display:none;">
@@ -73,13 +73,6 @@
           socket.emit("test", msg);
       })
 
-      // document.getElementById("cameraButton").addEventListener("click", function (event) {
-      //     var msg = {
-      //       id: 'camera'
-      //     };
-      //     socket.emit("cameraChange", msg);
-      // })
-
       socket.on("test", function (msg) {
         console.log(msg);
       });
@@ -88,13 +81,19 @@
         console.log(msg);
         var max_delta = Math.max(msg.dx_rot, msg.dy_rot, msg.dz_rot);
         var max_delta_dim = Object.keys(msg).filter(function(key) {return msg[key] === max_delta})[0];
-        var dimension = max_delta_dim[1];
+
+        var max_motion = Math.max(Math.abs(msg.acc_x), Math.abs(msg.acc_y), Math.abs(msg.acc_z));
+        var motion_direction = Object.keys(msg).filter(function(key) {return msg[key] === max_motion})[0];
+
+        var rot_dimension = max_delta_dim[1];
+        var motion_dimension = motion_direction[1];
+
         console.log(max_delta_dim);
         switch (msg.transform) {
           case "rotate":
-            change({element: "box", attr: "rotation", dim: dimension, value: max_delta}); break;
+            change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta}); break;
           case "translate":
-            change({element: "box", attr: "position", dim: msg.translate_dimension, value: msg.avg_distance/100}); break;
+            change({element: "box", attr: "position", dim: motion_dimension, value: 0.75}); break;
         }
 
       });
@@ -114,14 +113,12 @@
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
-        //time_being_sum = setInterval(add, 10);
         data_being_sent = setInterval(sendData, 75);
       }
 
       function endTransform (event) {
         event.preventDefault();
         clearTimeout(data_being_sent);
-        //clearTimeout(time_being_sum);
       }
 
       function change (payload) {
@@ -130,16 +127,7 @@
         current_attr_value[payload.dim] = current_attr_value[payload.dim] + parseFloat(payload.value);
         document.getElementById(payload.element).setAttribute(payload.attr, current_attr_value);
       }
-      //
-      // function changeCamera (id) {
-      //   document.getElementById(id).setAttribute("active", "true");
-      // }
-      //
-      // function add() {
-      //     //console.log(devicemotion.x);
-      //     time_seconds = time_seconds + 10; //in milliseconds
-      // }
-      //
+
       function sendData () {
         msg = {
           dx_rot: deviceorientation.x - deviceorientation_start.x,
@@ -150,21 +138,7 @@
           acc_y: devicemotion.y,
           acc_z: devicemotion.z,
         }
-        // var max_motion = Math.max(Math.abs(devicemotion.x), Math.abs(devicemotion.y), Math.abs(devicemotion.z));
-        // var motion_direction = Object.keys(devicemotion).find(key => devicemotion[key] === max_motion);
-        //
-        // var msg = {
-        //   delta: max_delta,
-        //   rotate_dimension: max_delta_dim,
-        //   transform: transform_type,
-        //   avg_distance: 50,
-        //   translate_dimension: motion_direction,
-        //   acc: max_motion,
-        // };
-
         socket.emit("orientation", msg);
-
-        //time_seconds = 0;
         deviceorientation_start = deviceorientation; //reset
       }
     </script>
