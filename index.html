@@ -97,7 +97,7 @@
         var tilt_direction = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_tilt})[0];
 
         var rot_dimension = max_delta_dim[1];
-        var motion_dimension = motion_direction && motion_direction[4];
+        // var motion_dimension = motion_direction && motion_direction[4];
 
 // mapping from real world axis to AFrame axis is different.
         var tilt_dimension;
