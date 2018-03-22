@@ -131,6 +131,8 @@
             change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta}); break;
           case "translate":
             change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value}); break;
+          case "scale":
+            change({element: "box", attr: "scale", dim: tilt_dimension, value: tilt_value}); break;
         }
 
       });
@@ -146,7 +148,7 @@
       }
 
       function startTransform (event, type) {
-        // event.preventDefault();
+        event.preventDefault();
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
@@ -154,7 +156,7 @@
       }
 
       function endTransform (event) {
-        // event.preventDefault();
+        event.preventDefault();
         clearTimeout(data_being_sent);
       }
 
