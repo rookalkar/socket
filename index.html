@@ -6,19 +6,42 @@
     <title>SocketIO Client</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
-    <link href="main.css" type="text/css"></link>
+
+    <style>
+      body {
+        background-color: powderblue;
+      }
+      .screentype > button{
+        width: 49.7%;
+        padding:50px;
+      }
+      .watch > button{
+        width: 100%;
+        padding: 40px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        border-color: #2196f3;
+        font-size: large;
+        background-color: #fff !important;
+        margin-bottom: 2px;
+      }
+
+      .watch > button:active {
+          background-color: yellow;
+      }
+    </style>
   </head>
   <body>
-    <div id="screentype">
-      <button style="width: 45%; padding:100px" onclick="selectScreen('watch')">Watch</button>
-      <button style="width: 45%; padding:100px" onclick="selectScreen('screen')" >Screen</button>
+    <div class="screentype">
+      <button onclick="selectScreen('watch')">Watch</button>
+      <button onclick="selectScreen('screen')">Screen</button>
     </div>
 
     <!-- <button type="button" id="cameraButton" style="width: 100%; height:10%">Camera Change</button> -->
-    <div id="watch" style="display:none;">
-      <button type="button" id="rotate" style="width: 45%; padding:20px" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
-      <button type="button" id="translate" style="width: 45%; padding:20px" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
-      <button type="button" id="input" style="width: 100%; padding:20px">Test Me </button>
+    <div class="watch" style="display:none;">
+      <button type="button" id="rotate" ontouchstart="startTransform(event, 'rotate')" ontouchend="endTransform(event)">Rotate </button>
+      <button type="button" id="translate" ontouchstart="startTransform(event, 'translate')" ontouchend="endTransform(event)">Translate </button>
+      <button type="button" id="translate" ontouchstart="startTransform(event, 'scale')" ontouchend="endTransform(event)">Scale </button>
     </div>
 
     <div id="screen" style="display:none;">
@@ -66,21 +89,6 @@
           y: event.gamma,
           z: event.alpha
         }
-      });
-
-      // window.addEventListener("devicemotion", function (event) {
-      //   devicemotion.x = event.acceleration.x;
-      //   devicemotion.y = event.acceleration.y;
-      //   devicemotion.z = event.acceleration.z;
-      // });
-
-      document.getElementById("input").addEventListener("click", function (event) {
-          var msg = devicemotion;
-          socket.emit("test", msg);
-      })
-
-      socket.on("test", function (msg) {
-        console.log(msg);
       });
 
       socket.on("orientation", function (msg) {
@@ -131,12 +139,12 @@
 
       function selectScreen (type) {
         if(type == 'watch'){
-          document.getElementById('watch').style.display = 'block';
+          document.getElementsByClassName('watch')[0].style.display = 'block';
         }
         else {
           document.getElementById('screen').style.display = 'block';
         }
-        document.getElementById('screentype').style.display = 'none';
+        document.getElementsByClassName('screentype')[0].style.display = 'none';
       }
 
       function startTransform (event, type) {
