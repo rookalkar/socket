@@ -146,7 +146,7 @@
       }
 
       function startTransform (event, type) {
-        event.preventDefault();
+        // event.preventDefault();
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
@@ -154,7 +154,7 @@
       }
 
       function endTransform (event) {
-        event.preventDefault();
+        // event.preventDefault();
         clearTimeout(data_being_sent);
       }
 
