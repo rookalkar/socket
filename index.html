@@ -153,16 +153,18 @@
       }
 
       function startTransform (event, type) {
-        //event.preventDefault();
+        event.preventDefault();
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
         data_being_sent = setInterval(sendData, 75);
+        return false;
       }
 
       function endTransform (event) {
-        //event.preventDefault();
+        event.preventDefault();
         clearTimeout(data_being_sent);
+        return false;
       }
 
       function change (payload) {
