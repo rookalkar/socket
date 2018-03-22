@@ -127,15 +127,15 @@
           case "rotate":
             change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta}); break;
           case "translate":
-            if(Math.abs(max_delta) > 50 && max_delta > 50) { //TBD: Sign calculation
-              change({element: "box", attr: "position", dim: 'z', value: 0.1}); break;
-            }
-            else if(Math.abs(max_delta) > 50 && max_delta < -50) {
-              change({element: "box", attr: "position", dim: 'z', value: -0.1}); break;
-            }
-            else {
+            // if(Math.abs(max_delta) > 50 && max_delta > 50) { //TBD: Sign calculation
+            //   change({element: "box", attr: "position", dim: 'z', value: 0.1}); break;
+            // }
+            // else if(Math.abs(max_delta) > 50 && max_delta < -50) {
+            //   change({element: "box", attr: "position", dim: 'z', value: -0.1}); break;
+            // }
+            // else {
               change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value}); break;
-            }
+            // }
           case "scale":
             change({element: "box", attr: "scale", dim: tilt_dimension, value: tilt_value}); break;
         }
