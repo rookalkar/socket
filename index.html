@@ -22,8 +22,12 @@
         background-color: #fff !important;
         margin-bottom: 2px;
       }
-
+/*
       .watch > button:active {
+        background-color: #2196f3 !important;
+        color: #fff;
+      } */
+      .active {
         background-color: #2196f3 !important;
         color: #fff;
       }
@@ -153,7 +157,8 @@
       }
 
       function startTransform (event, type) {
-        //event.preventDefault();
+        event.preventDefault();
+        event.target.classList.add("active");
         transform_type = type;
         deviceorientation_start = deviceorientation;
         time_seconds = 0; //Initiatlize
@@ -161,7 +166,8 @@
       }
 
       function endTransform (event) {
-        //event.preventDefault();
+        event.target.classList.remove("active");
+        event.preventDefault();
         clearTimeout(data_being_sent);
       }
 
