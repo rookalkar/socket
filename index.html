@@ -22,11 +22,6 @@
         background-color: #fff !important;
         margin-bottom: 2px;
       }
-/*
-      .watch > button:active {
-        background-color: #2196f3 !important;
-        color: #fff;
-      } */
       .active {
         background-color: #2196f3 !important;
         color: #2196f3;
@@ -64,26 +59,14 @@
     <script type="text/javascript">
       var deviceorientation = {};
       var deviceorientation_start = {};
-      var deviceorientation_delta = {};
-      var devicemotion = {};
-
       var transform_type = "rotate"; //default behaviour
-      var dim = 'x';
-
       var data_being_sent;
-      var time_being_sum;
-
-      var orientation;
 
       // Get WebSocket
       var socket = io();
       // Join a channel
       var room = "test";
       socket.emit("join", room);
-
-      window.addEventListener("orientationchange", function(event) {
-        orientation = event.orientation;
-      });
 
       window.addEventListener("deviceorientation", function(event) {
         deviceorientation = {
@@ -95,20 +78,21 @@
 
       socket.on("orientation", function (msg) {
         var tilt_value;
+        var tilt_dimension;
 
+        //Calculate the dimension with the maximum rotation difference and it's value
         var max_delta = Math.max(Math.abs(msg.dx_rot), Math.abs(msg.dy_rot), Math.abs(msg.dz_rot));
         var max_delta_dim = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_delta})[0];
         max_delta = msg[max_delta_dim];
-
-        var max_tilt = Math.max(Math.abs(msg.x_tilt), Math.abs(msg.y_tilt));
-        var tilt_direction = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_tilt})[0];
-
         var rot_dimension = max_delta_dim[1];
 
-// mapping from real world axis to AFrame axis is different.
-        var tilt_dimension;
-        ((tilt_direction[0]  == 'x') ? tilt_dimension = 'z': tilt_dimension = 'x' ) //when watch is tilted on the x axis, it is tilted in y direction
-        console.log(rot_dimension);
+        //Calculate the dimension with the maximum tilt difference
+        var max_tilt = Math.max(Math.abs(msg.x_tilt), Math.abs(msg.y_tilt));
+        var tilt_direction = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_tilt})[0];
+        //when watch is tilted on the x axis, it is tilted in y direction
+        ((tilt_direction[0]  == 'x') ? tilt_dimension = 'z': tilt_dimension = 'x' )
+
+        // mapping from real world axis to AFrame axis is different.
         if (rot_dimension === 'y') {
           rot_dimension = 'z';
           max_delta = -max_delta;
@@ -116,20 +100,31 @@
         else if(rot_dimension === 'z') {
           rot_dimension = 'y';
         }
-        console.log(rot_dimension);
 
-
-// figure out positive or negative
+        // figure out positive or negative
         if(msg[tilt_direction] > 0) {
           tilt_value = 0.1;
         }
         else {
           tilt_value = -0.1;
         }
+
         switch (msg.transform) {
           case "rotate":
-            change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta}); break;
+            {
+              change({element: "box", attr: "rotation", dim: rot_dimension, value: max_delta});
+              break;
+            }
           case "translate":
+            if(Math.abs(msg[tilt_direction]) > 10) {
+              if((rot_dimension === 'z') && (max_delta> 90)){
+                console.log('twist');
+              }
+              else{
+                change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
+              }
+            }
+            break;
             // if(Math.abs(max_delta) > 50 && max_delta > 50) { //TBD: Sign calculation
             //   change({element: "box", attr: "position", dim: 'z', value: 0.1}); break;
             // }
@@ -137,10 +132,12 @@
             //   change({element: "box", attr: "position", dim: 'z', value: -0.1}); break;
             // }
             // else {
-              change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value}); break;
             // }
           case "scale":
-            change({element: "box", attr: "scale", dim: tilt_dimension, value: tilt_value}); break;
+          if(Math.abs(msg[tilt_direction]) > 10) {
+            change({element: "box", attr: "scale", dim: tilt_dimension, value: tilt_value});
+          }
+          break;
         }
 
       });
@@ -160,7 +157,6 @@
         event.target.classList.add("active");
         transform_type = type;
         deviceorientation_start = deviceorientation;
-        time_seconds = 0; //Initiatlize
         data_being_sent = setInterval(sendData, 75);
       }
 
