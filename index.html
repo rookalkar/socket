@@ -116,23 +116,13 @@
               break;
             }
           case "translate":
-            if(Math.abs(msg[tilt_direction]) > 10) {
-              if((rot_dimension === 'z') && (max_delta> 90)){
-                console.log('twist');
-              }
-              else{
-                change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
-              }
+            if((rot_dimension === 'y') && (max_delta>20)){
+              console.log('twist');
+            }
+            else if (Math.abs(msg[tilt_direction]) > 10){
+              change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
             }
             break;
-            // if(Math.abs(max_delta) > 50 && max_delta > 50) { //TBD: Sign calculation
-            //   change({element: "box", attr: "position", dim: 'z', value: 0.1}); break;
-            // }
-            // else if(Math.abs(max_delta) > 50 && max_delta < -50) {
-            //   change({element: "box", attr: "position", dim: 'z', value: -0.1}); break;
-            // }
-            // else {
-            // }
           case "scale":
           if(Math.abs(msg[tilt_direction]) > 10) {
             change({element: "box", attr: "scale", dim: tilt_dimension, value: tilt_value});
