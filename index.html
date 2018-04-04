@@ -61,6 +61,7 @@
       var deviceorientation_start = {};
       var transform_type = "rotate"; //default behaviour
       var data_being_sent;
+      var twist = false;
 
       // Get WebSocket
       var socket = io();
@@ -117,7 +118,10 @@
             }
           case "translate":
             if((rot_dimension === 'y') && (max_delta>20)){
-              console.log('twist');
+              twist = true;
+            }
+            if(twist) {
+              change({element: "box", attr: "position", dim: 'z', value: 0.1});
             }
             else if (Math.abs(msg[tilt_direction]) > 10){
               change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
