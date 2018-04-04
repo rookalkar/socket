@@ -121,7 +121,7 @@
               twist = true;
             }
             if(twist) {
-              change({element: "box", attr: "position", dim: 'z', value: 0.1});
+              change({element: "box", attr: "position", dim: 'y', value: 0.1});
             }
             else if (Math.abs(msg[tilt_direction]) > 10){
               change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
