@@ -119,13 +119,9 @@
             }
           case "translate":
             if((rot_dimension === 'y') && ((max_delta>20) || (max_delta<-20))){
-              ((max_delta>20) ? z_value = 0.1 : z_value = -0.1)
-              twist = true;
-            }
-            if(twist) {
               change({element: "box", attr: "position", dim: 'y', value: z_value});
             }
-            else if (Math.abs(msg[tilt_direction]) > 10){
+            if (Math.abs(msg[tilt_direction]) > 20){
               change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
             }
             break;
