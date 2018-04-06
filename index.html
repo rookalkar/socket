@@ -118,7 +118,7 @@
               break;
             }
           case "translate":
-            if((rot_dimension === 'y')){
+            if((rot_dimension === 'y') && ((max_delta>20) || (max_delta<-20))){
               ((max_delta>20)? z_value= 0.1: z_value=0);
               ((max_delta<-20)? z_value= -0.1: z_value=0);
               twist = true;
