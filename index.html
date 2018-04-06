@@ -80,11 +80,12 @@
       socket.on("orientation", function (msg) {
         var tilt_value;
         var tilt_dimension;
+        var z_value;
 
         //Calculate the dimension with the maximum rotation difference and it's value
         var max_delta = Math.max(Math.abs(msg.dx_rot), Math.abs(msg.dy_rot), Math.abs(msg.dz_rot));
         var max_delta_dim = Object.keys(msg).filter(function(key) {return Math.abs(msg[key]) === max_delta})[0];
-        max_delta = msg[max_delta_dim];
+        max_delta = msg[max_delta_dim]; //add sign to max_delta
         var rot_dimension = max_delta_dim[1];
 
         //Calculate the dimension with the maximum tilt difference
@@ -117,11 +118,13 @@
               break;
             }
           case "translate":
-            if((rot_dimension === 'y') && (max_delta>20)){
+            if((rot_dimension === 'y')){
+              ((max_delta>20)? z_value= 0.1: z_value=0);
+              ((max_delta<-20)? z_value= -0.1: z_value=0);
               twist = true;
             }
             if(twist) {
-              change({element: "box", attr: "position", dim: 'y', value: 0.1});
+              change({element: "box", attr: "position", dim: 'y', value: z_value});
             }
             else if (Math.abs(msg[tilt_direction]) > 10){
               change({element: "box", attr: "position", dim: tilt_dimension, value: tilt_value});
